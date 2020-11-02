@@ -40,6 +40,8 @@ public class App {
             }
 
             image.setRGB(0, 0, width, height, pixels, 0, width);
+            final File pastaSaida = new File("./imagens/saida/");
+            if (!pastaSaida.exists()) pastaSaida.mkdirs();
             ImageIO.write(image, "jpg", new File("./imagens/saida/dean2.jpg"));
         } catch (Exception e) {
             e.printStackTrace();
