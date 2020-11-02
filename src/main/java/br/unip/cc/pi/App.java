@@ -40,7 +40,7 @@ public class App {
             }
 
             image.setRGB(0, 0, width, height, pixels, 0, width);
-            ImageIO.write(image, "jpg", new File("./imagens/dean2.jpg"));
+            ImageIO.write(image, "jpg", new File("./imagens/saida/dean2.jpg"));
         } catch (Exception e) {
             e.printStackTrace();
         }
