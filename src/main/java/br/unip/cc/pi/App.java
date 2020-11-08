@@ -10,12 +10,8 @@ import java.util.Collections;
 public class App {
     public static void main(String[] args) {
         try {
-            final BufferedImage image = ImageIO.read(new File("./imagens/0006.jpg"));
-            limiarizacao(image);
-//            ImageIO.write(image, "png", new File("./imagens/saida/0010_0.png"));
-            dilatacao(image);
-
-            //encontra maior linha horizontal e vertical
+            final BufferedImage image = ImageIO.read(new File("./imagens/0001.jpg"));
+            algoritmo1(image);
 
             final File pastaSaida = new File("./imagens/saida/");
             if (!pastaSaida.exists()) pastaSaida.mkdirs();
@@ -23,6 +19,84 @@ public class App {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void algoritmo1(BufferedImage image) {
+        limiarizacao(image);
+        dilatacao(image);
+        encontraRosto(image);
+    }
+
+    private static void encontraRosto(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        int tamMaiorLargura = 0;
+        int tamMaiorAltura = 0;
+        int xMaiorLargura = -1;
+        int yMaiorLargura = -1;
+        int xMaiorAltura = -1;
+        int yMaiorAltura = -1;
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Color cor = new Color(image.getRGB(x, y));
+
+                int tempYMaiorAltura = y;
+                int tempTamanho = 0;
+
+                while (cor.getRed() == 255 && tempYMaiorAltura+1 < height) {
+                    cor = new Color(image.getRGB(x, ++tempYMaiorAltura));
+                    tempTamanho++;
+                }
+
+                if (tempTamanho > tamMaiorAltura) {
+                    tamMaiorAltura = tempTamanho;
+                    xMaiorAltura = x;
+                    yMaiorAltura = y;
+                }
+
+            }
+        }
+
+        int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
+
+        for (int y = yMaiorAltura; y < yMaiorAltura + tamMaiorAltura; y++) {
+            pixels[y * width + xMaiorAltura] = Color.red.getRGB();
+        }
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Color cor = new Color(image.getRGB(x, y));
+
+                int tempXMaiorLargura = x;
+                int tempTamanho = 0;
+
+                while (cor.getRed() == 255 && tempXMaiorLargura+1 < width) {
+                    cor = new Color(image.getRGB(++tempXMaiorLargura, y));
+                    tempTamanho++;
+                }
+
+                if (tempTamanho > tamMaiorLargura) {
+                    tamMaiorLargura = tempTamanho;
+                    xMaiorLargura = x;
+                    yMaiorLargura = y;
+                }
+
+            }
+        }
+
+        for (int x = xMaiorLargura; x < xMaiorLargura + tamMaiorLargura; x++) {
+            pixels[yMaiorLargura * width + x] = Color.BLUE.getRGB();
+        }
+
+
+        image.setRGB(0, 0, width, height, pixels, 0, width);
+
+        final Graphics graphics = image.getGraphics();
+
+        graphics.setColor(Color.ORANGE);
+        graphics.drawRect(xMaiorLargura, yMaiorAltura, tamMaiorLargura, tamMaiorAltura);
     }
 
     private static void dilatacao(BufferedImage image) {
@@ -206,7 +280,7 @@ public class App {
                 int vermelho = pixelColor.getRed();
                 int verde = pixelColor.getGreen();
                 int azul = pixelColor.getBlue();
-                int alpha = pixelColor.getAlpha();
+//                int alpha = pixelColor.getAlpha();
 
                 if (
                         vermelho > 95 && verde > 40 && azul > 20 &&
@@ -216,9 +290,9 @@ public class App {
                         (vermelho - verde) > 15 &&
                         vermelho > azul
                 ) {
-                    pixels[y * width + x] = Color.white.getRGB();
+                    pixels[y * width + x] = Color.WHITE.getRGB();
                 } else {
-                    pixels[y * width + x] = Color.black.getRGB();
+                    pixels[y * width + x] = Color.BLACK.getRGB();
                 }
 
             }
