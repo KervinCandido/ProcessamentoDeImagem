@@ -1,5 +1,8 @@
 package br.unip.cc.pi;
 
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -8,7 +11,18 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class App {
+
+    static {
+        nu.pattern.OpenCV.loadShared();
+        System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
+    }
+
     public static void main(String[] args) {
+        Mat mat = Mat.eye(3, 3, CvType.CV_8UC1);
+        System.out.println("mat = " + mat.dump());
+    }
+
+    private static void teste1() {
         try {
             final BufferedImage image = ImageIO.read(new File("./imagens/0001.jpg"));
             algoritmo1(image);
