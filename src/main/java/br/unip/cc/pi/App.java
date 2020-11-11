@@ -1,7 +1,11 @@
 package br.unip.cc.pi;
 
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
+import br.unip.cc.pi.view.FrmCaptura;
+import org.opencv.core.*;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.CascadeClassifier;
+import org.opencv.objdetect.Objdetect;
+import org.opencv.videoio.VideoCapture;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -18,8 +22,11 @@ public class App {
     }
 
     public static void main(String[] args) {
-        Mat mat = Mat.eye(3, 3, CvType.CV_8UC1);
-        System.out.println("mat = " + mat.dump());
+        EventQueue.invokeLater(()->{
+            FrmCaptura frmCaptura = new FrmCaptura();
+            frmCaptura.setVisible(true);
+            frmCaptura.startCamera();
+        });
     }
 
     private static void teste1() {
