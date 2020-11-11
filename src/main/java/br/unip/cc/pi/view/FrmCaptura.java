@@ -27,7 +27,7 @@ public class FrmCaptura extends JFrame {
         this.capture = new VideoCapture();
         this.faceCascade = new CascadeClassifier();
         this.absoluteFaceSize = 0;
-        this.faceCascade.load("C:\\Users\\Kervin S. Candido\\IdeaProjects\\ProcessamentoDeImagem\\src\\main\\resources\\lbpcascades\\lbpcascade_frontalface.xml");
+        this.faceCascade.load("classificadores\\lbpcascades\\lbpcascade_frontalface.xml");
 
         imagemCamera = new JLabel("");
         imagemCamera.setBounds(0, 0, 800, 600);
