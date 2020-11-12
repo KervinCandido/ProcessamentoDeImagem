@@ -1,6 +1,8 @@
 package br.unip.cc.pi.view;
 
 import org.opencv.core.*;
+import org.opencv.face.FaceRecognizer;
+import org.opencv.face.FisherFaceRecognizer;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.objdetect.Objdetect;
@@ -17,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class FrmCaptura extends JFrame {
 
     private final JLabel imagemCamera;
+    private final FisherFaceRecognizer fisherFaceRecognizer;
     private ScheduledExecutorService timer;
     private final VideoCapture capture;
     private boolean cameraActive;
@@ -28,6 +31,8 @@ public class FrmCaptura extends JFrame {
         this.faceCascade = new CascadeClassifier();
         this.absoluteFaceSize = 0;
         this.faceCascade.load("classificadores\\lbpcascades\\lbpcascade_frontalface.xml");
+
+        fisherFaceRecognizer = FisherFaceRecognizer.create();
 
         imagemCamera = new JLabel("");
         imagemCamera.setBounds(0, 0, 800, 600);
@@ -112,6 +117,10 @@ public class FrmCaptura extends JFrame {
 
     private void detectAndDisplay(Mat frame)
     {
+
+//        fisherFaceRecognizer.train();
+        //System.out.println(fisherFaceRecognizer.predict_label(frame));
+
         MatOfRect faces = new MatOfRect();
         Mat grayFrame = new Mat();
 
@@ -136,6 +145,7 @@ public class FrmCaptura extends JFrame {
 
         // each rectangle in faces is a face: draw them!
         Rect[] facesArray = faces.toArray();
+
         for (int i = 0; i < facesArray.length; i++)
             Imgproc.rectangle(frame, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0), 3);
 

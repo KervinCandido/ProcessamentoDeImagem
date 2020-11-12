@@ -1,6 +1,8 @@
 package br.unip.cc.pi;
 
 import br.unip.cc.pi.view.FrmCaptura;
+import org.bytedeco.javacpp.Loader;
+import org.bytedeco.opencv.opencv_java;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
@@ -19,6 +21,7 @@ public class App {
     static {
         nu.pattern.OpenCV.loadShared();
         System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
+        Loader.load(opencv_java.class);
     }
 
     public static void main(String[] args) {
