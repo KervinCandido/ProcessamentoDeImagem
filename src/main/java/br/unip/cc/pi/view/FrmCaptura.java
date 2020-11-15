@@ -3,6 +3,7 @@ package br.unip.cc.pi.view;
 import org.opencv.core.*;
 import org.opencv.face.FaceRecognizer;
 import org.opencv.face.FisherFaceRecognizer;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.objdetect.Objdetect;
@@ -118,8 +119,7 @@ public class FrmCaptura extends JFrame {
     private void detectAndDisplay(Mat frame)
     {
 
-//        fisherFaceRecognizer.train();
-        //System.out.println(fisherFaceRecognizer.predict_label(frame));
+        if (frame.empty()) return;
 
         MatOfRect faces = new MatOfRect();
         Mat grayFrame = new Mat();
@@ -146,8 +146,18 @@ public class FrmCaptura extends JFrame {
         // each rectangle in faces is a face: draw them!
         Rect[] facesArray = faces.toArray();
 
-        for (int i = 0; i < facesArray.length; i++)
+        for (int i = 0; i < facesArray.length; i++) {
             Imgproc.rectangle(frame, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0), 3);
+            if (0 <= facesArray[i].x
+                    && 0 <= facesArray[i].width
+                    && facesArray[i].x + facesArray[i].width <= frame.cols()
+                    && 0 <= facesArray[i].y
+                    && 0 <= facesArray[i].height
+                    && facesArray[i].y + facesArray[i].height <= frame.rows()) {
+                Imgcodecs.imwrite( i + ".jpg", frame.submat(facesArray[i]));
+                System.out.println("ENTRO");
+            }
+        }
 
     }
 }
