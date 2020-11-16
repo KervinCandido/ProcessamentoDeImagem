@@ -44,12 +44,45 @@ public class FrmHome extends JFrame {
         getPanelHome().getBtnEntrar().addActionListener(this::btnEntrar);
         getPanelRegister().getBtnCapturaRosto().addActionListener(this::btnCapturaRosto);
         getPanelRegister().getBtnSalvar().addActionListener(this::btnSalvar);
+        getPanelLogged().getBtnSair().addActionListener(this::btnSair);
 
         setVisible(true);
     }
 
+    private void btnSair(ActionEvent event) {
+        switchPanel(getPanelHome());
+    }
+
     private void btnEntrar(ActionEvent event) {
         JDialogCaptureFace dialogCaptureFace = new JDialogCaptureFace();
+
+        CapturedFacesLimitListener capturedFacesLimitListener = () -> {
+            dialogCaptureFace.stop();
+            EventQueue.invokeLater(dialogCaptureFace::dispose);
+
+            for (BufferedImage bufferedImage : faceCapture.getFaces()) {
+                try {
+                    Person person = faceRecognizerService.recognize(bufferedImage);
+                    dialogCaptureFace.stop();
+                    EventQueue.invokeLater(dialogCaptureFace::dispose);
+
+                    EventQueue.invokeLater(() -> getPanelLogged().updatePerson(person));
+                    getPanelLogged().updatePerson(person);
+                    switchPanel(getPanelLogged());
+
+                    JOptionPane.showMessageDialog(this, "Bem Vindo " + person.getName());
+                    return;
+                } catch (RuntimeException e) {
+                    System.out.println(e.getMessage());
+                }
+
+            }
+            JOptionPane.showMessageDialog(this, "Rosto não encontrado");
+        };
+
+        faceCapture.clearListeners();
+        faceCapture.addCapturedFacesLimitListener(capturedFacesLimitListener);
+        faceCapture.clear();
 
         dialogCaptureFace.addFaceCaptureListener(faces -> {
             if (faces.size() > 1) {
@@ -60,20 +93,7 @@ public class FrmHome extends JFrame {
                 dialogCaptureFace.retart();
                 return;
             }
-            try {
-                BufferedImage bufferedImage = faces.get(0);
-                Person person = faceRecognizerService.recognize(bufferedImage);
-                dialogCaptureFace.stop();
-                EventQueue.invokeLater(dialogCaptureFace::dispose);
-
-                EventQueue.invokeLater(() -> getPanelLogged().updatePerson(person));
-                getPanelLogged().updatePerson(person);
-                switchPanel(getPanelLogged());
-
-                JOptionPane.showMessageDialog(this, "Bem Vindo " + person.getName());
-            } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
-            }
+            faceCapture.addFace(faces.get(0));
         });
         dialogCaptureFace.createAndShow();
     }

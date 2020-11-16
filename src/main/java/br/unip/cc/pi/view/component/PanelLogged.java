@@ -10,6 +10,7 @@ public class PanelLogged extends JPanel {
     private final JLabel lblIdPerson;
     private final JLabel lblNamePerson;
     private final JLabel lblNivelDeAcessoPerson;
+    private final JButton btnSair;
 
     public PanelLogged() {
         setLayout(null);
@@ -39,17 +40,29 @@ public class PanelLogged extends JPanel {
         lblNivelDeAcessoPerson.setBounds(120, 80, 300, 30);
         lblNivelDeAcessoPerson.setForeground(new Color(26, 188, 156));
 
+        btnSair = new JButton("Sair");
+        btnSair.setBounds(20, 120, 200, 30);
+        btnSair.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(230, 126, 34)));
+        btnSair.setBackground(new Color(52, 152, 219, 0));
+        btnSair.setForeground(new Color(236, 240, 241));
+        btnSair.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         add(lblId);
         add(lblName);
         add(lblNivelAcesso);
         add(lblIdPerson);
         add(lblNamePerson);
         add(lblNivelDeAcessoPerson);
+        add(btnSair);
     }
 
     public void updatePerson(Person person) {
         lblIdPerson.setText(person.getId().toString());
         lblNamePerson.setText(person.getName());
         lblNivelDeAcessoPerson.setText(person.getNivelDeAcesso().toString());
+    }
+
+    public JButton getBtnSair() {
+        return btnSair;
     }
 }

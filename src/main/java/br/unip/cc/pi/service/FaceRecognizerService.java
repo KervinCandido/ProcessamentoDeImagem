@@ -31,7 +31,7 @@ public class FaceRecognizerService {
         }
     }
 
-    public Person recognize(BufferedImage bufferedImage) {
+    public Person recognize(BufferedImage bufferedImage) throws RuntimeException {
         OpenCVFrameConverter.ToIplImage cv = new OpenCVFrameConverter.ToIplImage();
         Java2DFrameConverter jcv = new Java2DFrameConverter();
         Mat mat = cv.convertToMat(jcv.convert(bufferedImage));

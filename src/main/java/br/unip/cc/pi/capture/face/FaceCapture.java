@@ -22,7 +22,7 @@ public class FaceCapture {
 
     public void addFace(BufferedImage bufferedImage) {
         this.faces.add(bufferedImage);
-        if (this.faces.size() >= 5) {
+        if (this.faces.size() >= 10) {
             limitListeners.forEach(CapturedFacesLimitListener::onCapturedFaces);
         }
     }
