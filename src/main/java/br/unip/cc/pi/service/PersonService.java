@@ -32,4 +32,8 @@ public class PersonService {
     public Person findById(Long recognize) {
         return personDAO.findById(recognize);
     }
+
+    public int count() {
+        return personDAO.findAll().size();
+    }
 }

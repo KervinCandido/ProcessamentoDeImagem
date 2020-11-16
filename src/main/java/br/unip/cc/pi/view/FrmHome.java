@@ -51,7 +51,6 @@ public class FrmHome extends JFrame {
     private void btnEntrar(ActionEvent event) {
         JDialogCaptureFace dialogCaptureFace = new JDialogCaptureFace();
 
-
         dialogCaptureFace.addFaceCaptureListener(faces -> {
             if (faces.size() > 1) {
                 dialogCaptureFace.stop();
@@ -69,8 +68,7 @@ public class FrmHome extends JFrame {
 
                 EventQueue.invokeLater(() -> getPanelLogged().updatePerson(person));
                 getPanelLogged().updatePerson(person);
-                setContentPane(getPanelLogged());
-                revalidate();
+                switchPanel(getPanelLogged());
 
                 JOptionPane.showMessageDialog(this, "Bem Vindo " + person.getName());
             } catch (RuntimeException e) {
@@ -81,8 +79,7 @@ public class FrmHome extends JFrame {
     }
 
     public void btnAbrirCadastro(ActionEvent event) {
-        setContentPane(getPanelRegister());
-        revalidate();
+        switchPanel(getPanelRegister());
     }
 
     public void btnCapturaRosto(ActionEvent event) {
@@ -123,14 +120,20 @@ public class FrmHome extends JFrame {
         try {
             personService.create(personForm);
             JOptionPane.showMessageDialog(this, nome + " cadastrado com sucesso!!");
-            setContentPane(getPanelHome());
-            revalidate();
+            switchPanel(getPanelHome());
         } catch (RuntimeException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, e.getMessage(), "", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Não foi possível salvar a pessoa", "", JOptionPane.INFORMATION_MESSAGE);
         }
+    }
+
+    private void switchPanel(final JPanel panel) {
+        EventQueue.invokeLater(() -> {
+            setContentPane(panel);
+            revalidate();
+        });
     }
 
     private PanelHome getPanelHome() {

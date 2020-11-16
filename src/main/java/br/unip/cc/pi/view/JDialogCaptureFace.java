@@ -10,8 +10,10 @@ import org.bytedeco.opencv.global.opencv_imgproc;
 import org.bytedeco.opencv.opencv_core.*;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -91,7 +93,7 @@ public class JDialogCaptureFace extends JDialog {
 
                     if (faces.size() < 1) continue;
 
-                    BufferedImage bufferedImage = java2DFrameConverter.convert(frame);
+                    BufferedImage bufferedImage = java2DFrameConverter.getBufferedImage(frame);
                     Graphics graphics = getGraphics();
                     if (graphics == null) continue;
                     graphics.drawImage(bufferedImage, 0, 0, 600, 400, null);
