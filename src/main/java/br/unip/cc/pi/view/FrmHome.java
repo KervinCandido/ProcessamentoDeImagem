@@ -6,6 +6,7 @@ import br.unip.cc.pi.model.NivelDeAcesso;
 import br.unip.cc.pi.model.Person;
 import br.unip.cc.pi.service.FaceRecognizerService;
 import br.unip.cc.pi.service.PersonService;
+import br.unip.cc.pi.view.component.PanelLogged;
 import br.unip.cc.pi.view.component.PanelRegister;
 import br.unip.cc.pi.view.component.PanelHome;
 import br.unip.cc.pi.view.form.PersonForm;
@@ -21,6 +22,7 @@ public class FrmHome extends JFrame {
 
     private PanelHome panelHome;
     private PanelRegister panelRegister;
+    private PanelLogged panelLogged;
     private final FaceCapture faceCapture;
     private final PersonService personService;
     private final FaceRecognizerService faceRecognizerService;
@@ -64,6 +66,12 @@ public class FrmHome extends JFrame {
                 Person person = faceRecognizerService.recognize(bufferedImage);
                 dialogCaptureFace.stop();
                 EventQueue.invokeLater(dialogCaptureFace::dispose);
+
+                EventQueue.invokeLater(() -> getPanelLogged().updatePerson(person));
+                getPanelLogged().updatePerson(person);
+                setContentPane(getPanelLogged());
+                revalidate();
+
                 JOptionPane.showMessageDialog(this, "Bem Vindo " + person.getName());
             } catch (RuntimeException e) {
                 System.out.println(e.getMessage());
@@ -137,5 +145,12 @@ public class FrmHome extends JFrame {
             panelRegister = new PanelRegister();
         }
         return panelRegister;
+    }
+
+    private PanelLogged getPanelLogged() {
+        if (panelLogged == null ){
+            panelLogged = new PanelLogged();
+        }
+        return panelLogged;
     }
 }
