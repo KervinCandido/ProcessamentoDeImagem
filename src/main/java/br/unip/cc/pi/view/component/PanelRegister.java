@@ -11,6 +11,7 @@ public class PanelRegister extends JPanel {
     private final JButton btnCapturaRosto;
     private final JComboBox<NivelDeAcesso> cmbNivelAcesso;
     private final JButton btnSalvar;
+    private final JButton btnVoltar;
 
     public PanelRegister() {
         setLayout(null);
@@ -52,12 +53,20 @@ public class PanelRegister extends JPanel {
         btnSalvar.setForeground(new Color(236, 240, 241));
         btnSalvar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        btnVoltar = new JButton("Voltar");
+        btnVoltar.setBounds(230, 110, 200, 30);
+        btnVoltar.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(46, 204, 113)));
+        btnVoltar.setBackground(new Color(52, 152, 219, 0));
+        btnVoltar.setForeground(new Color(236, 240, 241));
+        btnVoltar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         add(lblNome);
         add(txtNome);
         add(lblNivelAcesso);
         add(cmbNivelAcesso);
         add(btnCapturaRosto);
         add(btnSalvar);
+        add(btnVoltar);
 
     }
 
@@ -80,5 +89,9 @@ public class PanelRegister extends JPanel {
 
     public JButton getBtnSalvar() {
         return btnSalvar;
+    }
+
+    public JButton getBtnVoltar() {
+        return btnVoltar;
     }
 }

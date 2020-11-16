@@ -44,9 +44,14 @@ public class FrmHome extends JFrame {
         getPanelHome().getBtnEntrar().addActionListener(this::btnEntrar);
         getPanelRegister().getBtnCapturaRosto().addActionListener(this::btnCapturaRosto);
         getPanelRegister().getBtnSalvar().addActionListener(this::btnSalvar);
+        getPanelRegister().getBtnVoltar().addActionListener(this::btnVoltar);
         getPanelLogged().getBtnSair().addActionListener(this::btnSair);
 
         setVisible(true);
+    }
+
+    private void btnVoltar(ActionEvent event) {
+        switchPanel(getPanelHome());
     }
 
     private void btnSair(ActionEvent event) {
