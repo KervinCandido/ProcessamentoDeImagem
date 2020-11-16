@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public class PersonForm {
 
+    private Long id;
     private String name;
     private NivelDeAcesso nivelDeAcesso;
     private List<BufferedImage> faces;
@@ -20,6 +21,18 @@ public class PersonForm {
 
     public PersonForm() {
         saveFacesInFilesService = new SaveFacesInFilesService();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public SaveFacesInFilesService getSaveFacesInFilesService() {
+        return saveFacesInFilesService;
     }
 
     public String getName() {
@@ -51,18 +64,21 @@ public class PersonForm {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PersonForm that = (PersonForm) o;
-        return Objects.equals(name, that.name) &&
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
                 nivelDeAcesso == that.nivelDeAcesso &&
-                Objects.equals(faces, that.faces);
+                Objects.equals(faces, that.faces) &&
+                Objects.equals(saveFacesInFilesService, that.saveFacesInFilesService);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, nivelDeAcesso, faces);
+        return Objects.hash(id, name, nivelDeAcesso, faces, saveFacesInFilesService);
     }
 
     public Person toPerson() throws IOException {
         Person person = new Person();
+        person.setId(id);
         person.setName(name);
         person.setNivelDeAcesso(nivelDeAcesso);
 

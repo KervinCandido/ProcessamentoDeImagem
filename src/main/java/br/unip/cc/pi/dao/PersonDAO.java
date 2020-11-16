@@ -20,9 +20,16 @@ public class PersonDAO {
         gson = new GsonBuilder().create();
     }
 
-    public void create(Person person) {
-        person.setId(getLastId());
-        people.add(person);
+    public void save(Person person) {
+        if (person.getId() != null) {
+            Person p = findById(person.getId());
+            p.setName(person.getName());
+            p.setNivelDeAcesso(person.getNivelDeAcesso());
+            p.setFaces(person.getFaces());
+        } else {
+            person.setId(getLastId());
+            people.add(person);
+        }
         updateGson();
     }
 

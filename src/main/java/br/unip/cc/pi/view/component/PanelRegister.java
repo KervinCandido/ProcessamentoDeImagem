@@ -10,7 +10,7 @@ public class PanelRegister extends JPanel {
     private final JTextField txtNome;
     private final JButton btnCapturaRosto;
     private final JComboBox<NivelDeAcesso> cmbNivelAcesso;
-    private final JButton btnCadastar;
+    private final JButton btnSalvar;
 
     public PanelRegister() {
         setLayout(null);
@@ -45,20 +45,25 @@ public class PanelRegister extends JPanel {
         btnCapturaRosto.setForeground(new Color(236, 240, 241));
         btnCapturaRosto.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btnCadastar = new JButton("Cadastra");
-        btnCadastar.setBounds(25, 110, 200, 30);
-        btnCadastar.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(46, 204, 113)));
-        btnCadastar.setBackground(new Color(52, 152, 219, 0));
-        btnCadastar.setForeground(new Color(236, 240, 241));
-        btnCadastar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnSalvar = new JButton("Salvar");
+        btnSalvar.setBounds(25, 110, 200, 30);
+        btnSalvar.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(46, 204, 113)));
+        btnSalvar.setBackground(new Color(52, 152, 219, 0));
+        btnSalvar.setForeground(new Color(236, 240, 241));
+        btnSalvar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         add(lblNome);
         add(txtNome);
         add(lblNivelAcesso);
         add(cmbNivelAcesso);
         add(btnCapturaRosto);
-        add(btnCadastar);
+        add(btnSalvar);
 
+    }
+
+    public void clean() {
+        txtNome.setText("");
+        cmbNivelAcesso.setSelectedIndex(0);
     }
 
     public JTextField getTxtNome() {
@@ -73,7 +78,7 @@ public class PanelRegister extends JPanel {
         return cmbNivelAcesso;
     }
 
-    public JButton getBtnCadastar() {
-        return btnCadastar;
+    public JButton getBtnSalvar() {
+        return btnSalvar;
     }
 }

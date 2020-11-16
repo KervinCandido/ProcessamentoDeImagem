@@ -43,7 +43,7 @@ public class FrmHome extends JFrame {
         getPanelHome().getBtnCadastro().addActionListener(this::btnAbrirCadastro);
         getPanelHome().getBtnEntrar().addActionListener(this::btnEntrar);
         getPanelRegister().getBtnCapturaRosto().addActionListener(this::btnCapturaRosto);
-        getPanelRegister().getBtnCadastar().addActionListener(this::btnCadastrar);
+        getPanelRegister().getBtnSalvar().addActionListener(this::btnSalvar);
 
         setVisible(true);
     }
@@ -79,6 +79,7 @@ public class FrmHome extends JFrame {
     }
 
     public void btnAbrirCadastro(ActionEvent event) {
+        getPanelRegister().clean();
         switchPanel(getPanelRegister());
     }
 
@@ -107,19 +108,39 @@ public class FrmHome extends JFrame {
         dialogCaptureFace.createAndShow();
     }
 
-    public void btnCadastrar(ActionEvent event) {
+    public void btnSalvar(ActionEvent event) {
         String nome = getPanelRegister().getTxtNome().getText().trim();
         NivelDeAcesso nivelDeAcesso = (NivelDeAcesso) getPanelRegister().getCmbNivelAcesso().getSelectedItem();
         List<BufferedImage> faces = faceCapture.getFaces();
-
         PersonForm personForm = new PersonForm();
+
+        System.out.println("Verificando se a pessoa já não é cadastrada");
+        for (BufferedImage face : faces) {
+            try {
+                Person person = faceRecognizerService.recognize(face);
+
+                if (person != null) {
+                    JOptionPane.showMessageDialog(this,
+                            "Pessoa já foi cadastrada anteriormente como " +
+                                    person.getName() + " - " + person.getNivelDeAcesso() +
+                                    "\nA função de salvar atualizará os dados"
+                            , "", JOptionPane.INFORMATION_MESSAGE);
+                    personForm.setId(person.getId());
+                    break;
+                }
+            } catch (RuntimeException e) {
+                System.out.println("Não é cadastrada");
+            }
+        }
+
+
         personForm.setName(nome);
         personForm.setNivelDeAcesso(nivelDeAcesso);
         personForm.setFaces(faces);
 
         try {
-            personService.create(personForm);
-            JOptionPane.showMessageDialog(this, nome + " cadastrado com sucesso!!");
+            personService.save(personForm);
+            JOptionPane.showMessageDialog(this, nome + " salvo(a) com sucesso!!");
             switchPanel(getPanelHome());
         } catch (RuntimeException e) {
             e.printStackTrace();

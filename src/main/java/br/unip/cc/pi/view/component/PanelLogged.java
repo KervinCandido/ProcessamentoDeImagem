@@ -28,15 +28,15 @@ public class PanelLogged extends JPanel {
         lblNivelAcesso.setForeground(new Color(236, 240, 241));
 
         lblIdPerson = new JLabel("");
-        lblIdPerson.setBounds(50, 20, 100, 30);
+        lblIdPerson.setBounds(50, 20, 300, 30);
         lblIdPerson.setForeground(new Color(26, 188, 156));
 
         lblNamePerson = new JLabel("");
-        lblNamePerson.setBounds(70, 50, 100, 30);
+        lblNamePerson.setBounds(70, 50, 300, 30);
         lblNamePerson.setForeground(new Color(26, 188, 156));
 
         lblNivelDeAcessoPerson = new JLabel("");
-        lblNivelDeAcessoPerson.setBounds(120, 80, 100, 30);
+        lblNivelDeAcessoPerson.setBounds(120, 80, 300, 30);
         lblNivelDeAcessoPerson.setForeground(new Color(26, 188, 156));
 
         add(lblId);

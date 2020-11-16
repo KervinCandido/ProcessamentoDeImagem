@@ -17,11 +17,11 @@ public class PersonService {
         this.faceRecognizerService = new FaceRecognizerService();
     }
 
-    public void create(PersonForm personForm) throws IOException, RuntimeException {
+    public void save(PersonForm personForm) throws IOException, RuntimeException {
         ValidateRegisterService validateRegisterService = new ValidateRegisterService();
         validateRegisterService.isPersonValid(personForm);
         Person person = personForm.toPerson();
-        personDAO.create(person);
+        personDAO.save(person);
         faceRecognizerService.train(person);
     }
 
