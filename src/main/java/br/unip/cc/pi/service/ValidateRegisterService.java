@@ -22,7 +22,7 @@ public class ValidateRegisterService {
         }
 
         List<BufferedImage> faces = personForm.getFaces();
-        if (faces.size() != 10) {
+        if (faces.size() != 5) {
             throw new RuntimeException("Leitura facial não concluida ou não realizada");
         }
     }

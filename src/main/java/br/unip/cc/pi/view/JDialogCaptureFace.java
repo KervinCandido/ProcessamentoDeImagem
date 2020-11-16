@@ -5,6 +5,7 @@ import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacv.*;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.opencv.global.opencv_core;
+import org.bytedeco.opencv.global.opencv_imgcodecs;
 import org.bytedeco.opencv.global.opencv_imgproc;
 import org.bytedeco.opencv.opencv_core.*;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
@@ -152,68 +153,6 @@ public class JDialogCaptureFace extends JDialog {
         }
     }
 
-    private void init() {
-        try {
-            carregaClassificador();
-            FrameGrabber grabber = VideoInputFrameGrabber.createDefault(0);
-
-            Runnable captureRunnable = () -> {
-                try {
-                    grabber.start();
-
-                    OpenCVFrameConverter.ToMat converter = new OpenCVFrameConverter.ToMat();
-                    Mat grabbedImage = converter.convert(grabber.grab());
-                    int height = grabbedImage.rows();
-                    int width = grabbedImage.cols();
-
-                    Mat grayImage = new Mat(height, width, opencv_core.CV_8UC1);
-
-                    while (isVisible() && (grabbedImage = converter.convert(grabber.grab())) != null) {
-
-                        Size scaleSize = new Size(WINDOW_WIDTH, WINDOW_HEIGHT);
-                        Mat resizeImage = new Mat();
-                        opencv_imgproc.resize(grabbedImage, resizeImage, scaleSize , 0, 0, INTER_AREA);
-
-                        cvtColor(resizeImage, grayImage, CV_BGR2GRAY);
-
-                        Frame frame = converter.convert(resizeImage);
-                        Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
-
-                        RectVector faces = new RectVector();
-                        classifier.detectMultiScale(grayImage, faces);
-
-                        if (faces.size() < 1) continue;
-
-                        BufferedImage bufferedImage = java2DFrameConverter.convert(frame);
-                        Graphics graphics = getGraphics();
-                        if (graphics == null) continue;
-                        graphics.drawImage(bufferedImage, 0, 0, 600, 400, null);
-                        graphics.setColor(Color.GREEN);
-
-                        List<BufferedImage> facesList = new ArrayList<>();
-                        for (Rect rect : faces.get()) {
-                            graphics.drawRect(rect.x(), rect.y(), rect.width(), rect.height());
-                            BufferedImage bufferedFace = bufferedImage.getSubimage(rect.x(), rect.y(), rect.width(), rect.height());
-                            facesList.add(bufferedFace);
-                        }
-                        listeners.forEach( l -> l.onFaceCapture(facesList));
-                        graphics.dispose();
-                    }
-                } catch (IOException e) {
-                    //FAÇA ALGO
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println(e.getMessage());
-                }
-            };
-
-            new Thread(captureRunnable).start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
-    }
 
     private void carregaClassificador() throws IOException {
         //Busca Classificador

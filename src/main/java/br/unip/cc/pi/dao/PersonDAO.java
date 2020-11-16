@@ -12,13 +12,12 @@ import java.util.List;
 
 public class PersonDAO {
 
-    private final List<Person> people;
+    private static final List<Person> people = new ArrayList<>();
     private final Gson gson;
     private final File RECONHECIMENTO_FACIAL_DB = new File("./reconhecimento-facial.json");
 
     public PersonDAO() {
         gson = new GsonBuilder().create();
-        people = new ArrayList<>();
     }
 
     public void create(Person person) {
@@ -27,10 +26,17 @@ public class PersonDAO {
         updateGson();
     }
 
-    public List<Person> findAll() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(RECONHECIMENTO_FACIAL_DB));
-        Type listType = new TypeToken<ArrayList<Person>>(){}.getType();
-        return gson.fromJson(br, listType);
+    public List<Person> findAll() {
+        try {
+            if (!people.isEmpty()) return people;
+
+            BufferedReader br = new BufferedReader(new FileReader(RECONHECIMENTO_FACIAL_DB));
+            Type listType = new TypeToken<ArrayList<Person>>() {}.getType();
+            people.addAll(gson.fromJson(br, listType));
+            return new ArrayList<>(people);
+        } catch (FileNotFoundException e) {
+            return new ArrayList<>();
+        }
     }
 
     private Long getLastId() {
@@ -50,5 +56,10 @@ public class PersonDAO {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Person findById(Long recognize) throws RuntimeException{
+        return people.stream().filter(person -> person.getId().equals(recognize))
+                .findFirst().orElseThrow(() -> new RuntimeException("Pessoa não encontrada"));
     }
 }

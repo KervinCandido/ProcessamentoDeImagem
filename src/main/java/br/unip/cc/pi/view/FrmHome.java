@@ -3,6 +3,8 @@ package br.unip.cc.pi.view;
 import br.unip.cc.pi.capture.face.FaceCapture;
 import br.unip.cc.pi.capture.face.listener.CapturedFacesLimitListener;
 import br.unip.cc.pi.model.NivelDeAcesso;
+import br.unip.cc.pi.model.Person;
+import br.unip.cc.pi.service.FaceRecognizerService;
 import br.unip.cc.pi.service.PersonService;
 import br.unip.cc.pi.view.component.PanelRegister;
 import br.unip.cc.pi.view.component.PanelHome;
@@ -21,10 +23,12 @@ public class FrmHome extends JFrame {
     private PanelRegister panelRegister;
     private final FaceCapture faceCapture;
     private final PersonService personService;
+    private final FaceRecognizerService faceRecognizerService;
 
     public FrmHome() throws HeadlessException {
         this.faceCapture = new FaceCapture();
         this.personService = new PersonService();
+        this.faceRecognizerService = new FaceRecognizerService();
     }
 
     public void createAndShow() {
@@ -35,10 +39,37 @@ public class FrmHome extends JFrame {
 
         setContentPane(getPanelHome());
         getPanelHome().getBtnCadastro().addActionListener(this::btnAbrirCadastro);
+        getPanelHome().getBtnEntrar().addActionListener(this::btnEntrar);
         getPanelRegister().getBtnCapturaRosto().addActionListener(this::btnCapturaRosto);
         getPanelRegister().getBtnCadastar().addActionListener(this::btnCadastrar);
 
         setVisible(true);
+    }
+
+    private void btnEntrar(ActionEvent event) {
+        JDialogCaptureFace dialogCaptureFace = new JDialogCaptureFace();
+
+
+        dialogCaptureFace.addFaceCaptureListener(faces -> {
+            if (faces.size() > 1) {
+                dialogCaptureFace.stop();
+                JOptionPane.showMessageDialog(dialogCaptureFace,
+                        "Somente a pessoa que irá se autenticar deve fica na câmera", "",
+                        JOptionPane.WARNING_MESSAGE);
+                dialogCaptureFace.retart();
+                return;
+            }
+            try {
+                BufferedImage bufferedImage = faces.get(0);
+                Person person = faceRecognizerService.recognize(bufferedImage);
+                dialogCaptureFace.stop();
+                EventQueue.invokeLater(dialogCaptureFace::dispose);
+                JOptionPane.showMessageDialog(this, "Bem Vindo " + person.getName());
+            } catch (RuntimeException e) {
+                System.out.println(e.getMessage());
+            }
+        });
+        dialogCaptureFace.createAndShow();
     }
 
     public void btnAbrirCadastro(ActionEvent event) {

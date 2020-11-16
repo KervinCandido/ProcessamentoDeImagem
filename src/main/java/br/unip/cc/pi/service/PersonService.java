@@ -1,21 +1,35 @@
 package br.unip.cc.pi.service;
 
 import br.unip.cc.pi.dao.PersonDAO;
+import br.unip.cc.pi.model.Person;
 import br.unip.cc.pi.view.form.PersonForm;
 
 import java.io.IOException;
+import java.util.List;
 
 public class PersonService {
 
     private final PersonDAO personDAO;
+    private final FaceRecognizerService faceRecognizerService;
 
     public PersonService() {
         this.personDAO = new PersonDAO();
+        this.faceRecognizerService = new FaceRecognizerService();
     }
 
     public void create(PersonForm personForm) throws IOException, RuntimeException {
         ValidateRegisterService validateRegisterService = new ValidateRegisterService();
         validateRegisterService.isPersonValid(personForm);
-        personDAO.create(personForm.toPerson());
+        Person person = personForm.toPerson();
+        personDAO.create(person);
+        faceRecognizerService.train(person);
+    }
+
+    public List<Person> findAll() {
+        return personDAO.findAll();
+    }
+
+    public Person findById(Long recognize) {
+        return personDAO.findById(recognize);
     }
 }

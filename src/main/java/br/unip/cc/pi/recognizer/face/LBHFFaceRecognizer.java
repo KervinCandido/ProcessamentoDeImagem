@@ -1,5 +1,6 @@
 package br.unip.cc.pi.recognizer.face;
 
+import br.unip.cc.pi.model.Person;
 import org.bytedeco.javacpp.DoublePointer;
 import org.bytedeco.javacpp.IntPointer;
 import org.bytedeco.opencv.global.opencv_core;
@@ -8,6 +9,7 @@ import org.bytedeco.opencv.opencv_core.IplImage;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.MatVector;
 
+import java.io.File;
 import java.nio.IntBuffer;
 
 import static org.bytedeco.opencv.global.opencv_imgproc.CV_BGR2GRAY;
@@ -19,43 +21,40 @@ public class LBHFFaceRecognizer implements FaceRecognizer {
 
     public LBHFFaceRecognizer() {
         recognizer = org.bytedeco.opencv.opencv_face.LBPHFaceRecognizer.create();
-        init();
     }
 
-    private void init() {
-        MatVector images = new MatVector(2);
-        Mat labels = new Mat(2, 1, opencv_core.CV_32SC1);
+    @Override
+    public void train(Person person) {
+        int qtdFaces = person.getFaces().size();
+        MatVector images = new MatVector(qtdFaces);
+        Mat labels = new Mat(qtdFaces, 1, opencv_core.CV_32SC1);
         IntBuffer labelsBuf = labels.createBuffer();
 
-        Mat img = opencv_imgcodecs.imread("./face.jpg");
-        Mat img2 = opencv_imgcodecs.imread("./face2.jpg");
-        cvtColor(img, img, CV_BGR2GRAY);
-        cvtColor(img2, img2, CV_BGR2GRAY);
+        for (int i = 0; i < person.getFaces().size(); i++) {
+            Mat img = opencv_imgcodecs.imread(person.getFaces().get(i).getAbsolutePath());
+            cvtColor(img, img, CV_BGR2GRAY);
 
-        images.put(0, img);
-        labelsBuf.put(0, 1000);
-
-        images.put(1, img2);
-        labelsBuf.put(1, 5000);
-
+            images.put(i, img);
+            labelsBuf.put(i, person.getId().intValue());
+        }
         recognizer.train(images, labels);
+        recognizer.save("train.yml");
     }
 
     @Override
     public int recognize(Mat faces) {
+        recognizer.read("train.yml");
         cvtColor(faces, faces, CV_BGR2GRAY);
+
         IntPointer label = new IntPointer(1);
         DoublePointer confidence = new DoublePointer(0);
         recognizer.predict(faces, label, confidence);
 
         int predictedLabel = label.get(0);
-
-        //System.out.println(confidence.get(0));
-
-        //Confidence value less than 60 means face is known
-        //Confidence value greater than 60 means face is unknown
+        System.out.println("PREDICTED LABEL " + predictedLabel);
+        System.out.println("CONFIDENCE " + confidence.get(0));
+        //acima de 60 desconhecido
         if(confidence.get(0) > 60) {
-            //System.out.println("-1");
             return -1;
         }
         return predictedLabel;

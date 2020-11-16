@@ -1,8 +1,8 @@
 package br.unip.cc.pi;
 
-import br.unip.cc.pi.dao.PersonDAO;
-import br.unip.cc.pi.recognizer.face.FaceRecognerFactory;
-import br.unip.cc.pi.recognizer.face.FaceRecognizer;
+import br.unip.cc.pi.model.Person;
+import br.unip.cc.pi.service.FaceRecognizerService;
+import br.unip.cc.pi.service.PersonService;
 import br.unip.cc.pi.view.FrmHome;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.indexer.DoubleIndexer;
@@ -11,7 +11,6 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.opencv.global.opencv_core;
-import org.bytedeco.opencv.global.opencv_imgcodecs;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.Point;
 
@@ -23,10 +22,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.bytedeco.javacv.*;
 import org.bytedeco.opencv.opencv_core.*;
@@ -41,6 +39,14 @@ public class App {
 
 
     public static void main(String[] args) throws Exception {
+        Runnable treinamento = () -> {
+            List<Person> people = new PersonService().findAll();
+            FaceRecognizerService faceRecognizerService = new FaceRecognizerService();
+            faceRecognizerService.train(people);
+            System.out.println("TREINO COMPLETO");
+        };
+        new Thread(treinamento).start();
+
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
 
@@ -53,14 +59,6 @@ public class App {
             System.err.println(e.getMessage());
             System.exit(-1);
         }
-
-//        JDialogCapture capture = new JDialogCapture();
-//        capture.createAndShow();
-
-//        FaceRecognizer fisherFaceRecognizer = FaceRecognerFactory.createLBHFFaceRecognizer();
-//
-//        Mat mat = opencv_imgcodecs.imread("./face2.jpg");
-//        System.out.println(fisherFaceRecognizer.recognize(mat));
     }
 
     private static void teste02(String[] args) throws IOException {
